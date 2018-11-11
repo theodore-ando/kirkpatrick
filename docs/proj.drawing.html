@@ -1,0 +1,170 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>proj.drawing module &#8212; COS451 Final Project: Kirkpatrick&#39;s Algorithm 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="proj.hull module" href="proj.hull.html" />
+    <link rel="prev" title="proj.conf module" href="proj.conf.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-proj.drawing">
+<span id="proj-drawing-module"></span><h1>proj.drawing module<a class="headerlink" href="#module-proj.drawing" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="proj.drawing.plot_point">
+<code class="descname">plot_point</code><span class="sig-paren">(</span><em>point: polygons.Point</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/proj/drawing.html#plot_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.drawing.plot_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a single point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>point</strong> – point to be plotted</li>
+<li><strong>args</strong> – var args to be passed to pyplot</li>
+<li><strong>kwargs</strong> – kwargs to be passed to pyplot</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.drawing.plot_points">
+<code class="descname">plot_points</code><span class="sig-paren">(</span><em>points: typing.List[polygons.Point], *args, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/proj/drawing.html#plot_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.drawing.plot_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a list of points in a scatter plot style.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>points</strong> – list of Point objects</li>
+<li><strong>args</strong> – var args to be passed to pyplot</li>
+<li><strong>kwargs</strong> – kwargs to be passed to pyplot</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.drawing.plot_polygon">
+<code class="descname">plot_polygon</code><span class="sig-paren">(</span><em>polygon: polygons.Polygon</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/proj/drawing.html#plot_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.drawing.plot_polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a polygon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>polygon</strong> – Polygon to be plotted</li>
+<li><strong>args</strong> – var args to be passed to pyplot</li>
+<li><strong>kwargs</strong> – kwargs to be passed to pyplot</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.drawing.plot_polygons">
+<code class="descname">plot_polygons</code><span class="sig-paren">(</span><em>polygons</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/proj/drawing.html#plot_polygons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.drawing.plot_polygons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a list of polygons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>polygons</strong> – </li>
+<li><strong>args</strong> – var args to be passed to pyplot</li>
+<li><strong>kwargs</strong> – kwargs to be passed to pyplot</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="proj.html">proj package</a><ul>
+      <li>Previous: <a href="proj.conf.html" title="previous chapter">proj.conf module</a></li>
+      <li>Next: <a href="proj.hull.html" title="next chapter">proj.hull module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Theodore Ando.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/proj.drawing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

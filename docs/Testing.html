@@ -1,0 +1,737 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Test basic plotting and polygon creation &#8212; COS451 Final Project: Kirkpatrick&#39;s Algorithm 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 8ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+</style>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">drawing</span>
+<span class="kn">from</span> <span class="nn">kirkpatrick</span> <span class="k">import</span> <span class="n">Kirkpatrick</span><span class="p">,</span> <span class="n">time_tests</span>
+<span class="kn">from</span> <span class="nn">polygons</span> <span class="k">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">Triangle</span>
+<span class="kn">from</span> <span class="nn">polygons</span> <span class="k">import</span> <span class="n">generate_random_tiling</span>
+<span class="kn">from</span> <span class="nn">polygons</span> <span class="k">import</span> <span class="n">generate_triangle_tiling</span>
+<span class="kn">from</span> <span class="nn">triangulate</span> <span class="k">import</span> <span class="n">triangulate</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="o">%</span><span class="k">autoreload</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="section" id="Test-basic-plotting-and-polygon-creation">
+<h1>Test basic plotting and polygon creation<a class="headerlink" href="#Test-basic-plotting-and-polygon-creation" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">square0</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygon</span><span class="p">(</span><span class="n">square0</span><span class="p">,</span> <span class="s1">&#39;bo-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_3_0.png" src="_images/Testing_3_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">square0_triangles</span> <span class="o">=</span> <span class="n">triangulate</span><span class="p">(</span><span class="n">square0</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">square0_triangles</span><span class="p">,</span> <span class="s1">&#39;bo-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_4_0.png" src="_images/Testing_4_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">octagon</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span>
+    <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">inside_tri</span> <span class="o">=</span> <span class="n">Triangle</span><span class="p">([</span>
+    <span class="n">Point</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.25</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="c1"># gap_triangles = octagon.triangulate(hole=inside_tri)</span>
+<span class="n">gap_triangles</span> <span class="o">=</span> <span class="n">triangulate</span><span class="p">(</span><span class="n">octagon</span><span class="p">,</span> <span class="n">hole</span><span class="o">=</span><span class="n">inside_tri</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">gap_triangles</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">([</span><span class="n">octagon</span><span class="p">,</span> <span class="n">inside_tri</span><span class="p">],</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_5_0.png" src="_images/Testing_5_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">random_polygon</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.727261</span><span class="p">,</span> <span class="mf">0.681506</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.128893</span><span class="p">,</span> <span class="mf">1.104487</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.848083</span><span class="p">,</span> <span class="mf">1.122645</span><span class="p">)])</span>
+<span class="n">random_polygon_triangles</span> <span class="o">=</span> <span class="n">triangulate</span><span class="p">(</span><span class="n">random_polygon</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">random_polygon_triangles</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_6_0.png" src="_images/Testing_6_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">square0_bounding_tri</span> <span class="o">=</span> <span class="n">Triangle</span><span class="o">.</span><span class="n">enclosing_triangle</span><span class="p">(</span><span class="n">square0</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">square0_triangles</span><span class="p">,</span> <span class="s1">&#39;bo-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygon</span><span class="p">(</span><span class="n">square0_bounding_tri</span><span class="p">,</span> <span class="s1">&#39;ro-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_7_0.png" src="_images/Testing_7_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="c1"># square1 = Polygon([Point(0, 0), Point(2, 0), Point(2, 2), Point(0, 2)])</span>
+<span class="c1"># square1_bounding_tri = Triangle.enclosing_triangle(square1)</span>
+<span class="c1"># gap_triangles = square1_bounding_tri.triangulate(hole=square1)</span>
+
+<span class="c1"># drawing.plot_polygons([square1, square1_bounding_tri])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Test-tilings">
+<h1>Test tilings<a class="headerlink" href="#Test-tilings" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">square1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">tiles</span> <span class="o">=</span> <span class="n">generate_random_tiling</span><span class="p">(</span><span class="n">square1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">tiles</span><span class="p">,</span> <span class="s1">&#39;bo-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_10_0.png" src="_images/Testing_10_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">tris</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">3.980854</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">1.370171</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.124402</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">3.980854</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">3.980854</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">3.370171</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.124402</span><span class="p">)])</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">{</span><span class="n">p</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tris</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">pts</span><span class="p">}:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<span class="c1"># bound = Polygon([Point(1.727261, 0.681506), Point(1.128893, 1.104487), Point(0.000000, 2.000000)])</span>
+
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">tris</span><span class="p">,</span> <span class="s1">&#39;o-&#39;</span><span class="p">)</span>
+<span class="c1"># drawing.plot_polygon(bound, &#39;ro-&#39;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Point(1.000000, 3.980854)
+Point(3.370171, -0.124402)
+Point(2.000000, 2.000000)
+Point(-1.370171, -0.124402)
+Point(0.000000, 2.000000)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_11_1.png" src="_images/Testing_11_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">tiles</span> <span class="o">=</span> <span class="n">generate_triangle_tiling</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">tiles</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_12_0.png" src="_images/Testing_12_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">regions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">)]),</span>
+
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">68.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">68.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">168.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">199.042710</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">68.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">199.042710</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">168.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">168.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">168.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">168.508530</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.220085</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">199.042710</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">100.000000</span><span class="p">)])</span>
+<span class="p">]</span>
+
+<span class="n">affected</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">)]),</span>
+    <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">50.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">50.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">100.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">)])</span>
+<span class="p">]</span>
+
+<span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">affected</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_13_0.png" src="_images/Testing_13_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Construction-locator">
+<h1>Construction locator<a class="headerlink" href="#Construction-locator" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="c1"># tiles = [</span>
+<span class="c1">#     Polygon([</span>
+<span class="c1">#         Point(8.681595, 3.113523), Point(10.000000, 0.000000), Point(10.000000, 10.000000),</span>
+<span class="c1">#         Point(1.258842, 6.913277), Point(3.670703, 6.336320), Point(0.000000, 0.000000),</span>
+<span class="c1">#         Point(8.668625, 6.053702)</span>
+<span class="c1">#     ]),</span>
+<span class="c1">#     Polygon([</span>
+<span class="c1">#         Point(10.000000, 10.000000), Point(0.000000, 10.000000), Point(0.000000, 0.000000),</span>
+<span class="c1">#         Point(1.258842, 6.913277)</span>
+<span class="c1">#     ]),</span>
+<span class="c1">#     Polygon([</span>
+<span class="c1">#         Point(1.258842, 6.913277), Point(0.000000, 0.000000), Point(3.670703, 6.336320)</span>
+<span class="c1">#     ]),</span>
+<span class="c1">#     Polygon([</span>
+<span class="c1">#         Point(0.000000, 0.000000), Point(8.681595, 3.113523), Point(8.668625, 6.053702)</span>
+<span class="c1">#     ]),</span>
+<span class="c1">#     Polygon([</span>
+<span class="c1">#         Point(0.000000, 0.000000), Point(10.000000, 0.000000), Point(8.681595, 3.113523)</span>
+<span class="c1">#     ])</span>
+<span class="c1"># ]</span>
+
+<span class="n">tiles</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.727261</span><span class="p">,</span> <span class="mf">0.681506</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.128893</span><span class="p">,</span> <span class="mf">1.104487</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.848083</span><span class="p">,</span> <span class="mf">1.122645</span><span class="p">)]),</span>
+        <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">1.128893</span><span class="p">,</span> <span class="mf">1.104487</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.848083</span><span class="p">,</span> <span class="mf">1.122645</span><span class="p">)]),</span>
+        <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">1.692925</span><span class="p">,</span> <span class="mf">0.491248</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">1.727261</span><span class="p">,</span> <span class="mf">0.681506</span><span class="p">)]),</span>
+        <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">1.692925</span><span class="p">,</span> <span class="mf">0.491248</span><span class="p">)]),</span>
+        <span class="n">Polygon</span><span class="p">([</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span>
+            <span class="n">Point</span><span class="p">(</span><span class="mf">1.128893</span><span class="p">,</span> <span class="mf">1.104487</span><span class="p">)])</span>
+    <span class="p">]</span>
+
+<span class="c1"># drawing.plot_polygons(triangulate(tiles[0]), &#39;r-&#39;)</span>
+<span class="c1"># drawing.plot_polygon(tiles[0], &#39;k-&#39;)</span>
+
+
+<span class="n">all_tris</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">tiles</span><span class="p">:</span>
+    <span class="n">tris</span> <span class="o">=</span> <span class="n">triangulate</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span>
+    <span class="n">all_tris</span> <span class="o">+=</span> <span class="n">tris</span>
+
+<span class="k">for</span> <span class="n">tri</span> <span class="ow">in</span> <span class="n">all_tris</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">tri</span><span class="o">.</span><span class="n">is_ccw</span><span class="p">())</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">all_tris</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">tiles</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Triangle([Point(1.128893, 1.104487), Point(0.848083, 1.122645), Point(0.000000, 0.000000)]) True
+Triangle([Point(1.727261, 0.681506), Point(2.000000, 2.000000), Point(1.128893, 1.104487)]) True
+Triangle([Point(1.727261, 0.681506), Point(1.128893, 1.104487), Point(0.000000, 0.000000)]) True
+Triangle([Point(0.000000, 2.000000), Point(0.000000, 0.000000), Point(0.848083, 1.122645)]) True
+Triangle([Point(0.000000, 2.000000), Point(0.848083, 1.122645), Point(1.128893, 1.104487)]) True
+Triangle([Point(1.692925, 0.491248), Point(2.000000, 2.000000), Point(1.727261, 0.681506)]) True
+Triangle([Point(1.692925, 0.491248), Point(1.727261, 0.681506), Point(0.000000, 0.000000)]) True
+Triangle([Point(1.692925, 0.491248), Point(0.000000, 0.000000), Point(2.000000, 0.000000)]) True
+Triangle([Point(2.000000, 2.000000), Point(1.692925, 0.491248), Point(2.000000, 0.000000)]) True
+Triangle([Point(0.000000, 2.000000), Point(1.128893, 1.104487), Point(2.000000, 2.000000)]) True
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_15_1.png" src="_images/Testing_15_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">tri</span> <span class="o">=</span> <span class="n">Triangle</span><span class="p">([</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tri</span><span class="o">.</span><span class="n">ears</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[0, 1, 2]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">locator</span> <span class="o">=</span> <span class="n">Kirkpatrick</span><span class="p">(</span><span class="n">tiles</span><span class="p">)</span>
+<span class="n">query_point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">located_polygon</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">query_point</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;matplotlib.figure.Figure at 0x10dcfdb00&gt;
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">tiles</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygon</span><span class="p">(</span><span class="n">located_polygon</span><span class="p">,</span> <span class="s1">&#39;ro-&#39;</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">plot_point</span><span class="p">(</span><span class="n">query_point</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_18_0.png" src="_images/Testing_18_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Timing-tests">
+<h1>Timing tests<a class="headerlink" href="#Timing-tests" title="Permalink to this headline">¶</a></h1>
+<p>Honestly, you can run these, and it shows almost no increase in runtime,
+but the amount of time to generate the tilings and the preprocessing
+takes much longer than the actual algorithm.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">data_pts</span> <span class="o">=</span> <span class="n">time_tests</span><span class="p">(</span><span class="n">min_pts</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">max_pts</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">inc</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+INFO:root:Running timing tests on point location
+INFO:root:Performing tests on 100 points
+INFO:root:Performing tests on 1100 points
+INFO:root:Performing tests on 2100 points
+INFO:root:Performing tests on 3100 points
+INFO:root:Performing tests on 4100 points
+INFO:root:Performing tests on 5100 points
+INFO:root:Performing tests on 6100 points
+INFO:root:Performing tests on 7100 points
+INFO:root:Performing tests on 8100 points
+INFO:root:Performing tests on 9100 points
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">drawing</span><span class="o">.</span><span class="n">plot_points</span><span class="p">(</span><span class="n">data_pts</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/Testing_22_0.png" src="_images/Testing_22_0.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Theodore Ando.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Testing.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

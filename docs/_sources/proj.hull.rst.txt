@@ -1,0 +1,7 @@
+proj\.hull module
+=================
+
+.. automodule:: proj.hull
+    :members:
+    :undoc-members:
+    :show-inheritance:

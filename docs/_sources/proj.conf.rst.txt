@@ -1,0 +1,7 @@
+proj\.conf module
+=================
+
+.. automodule:: proj.conf
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+proj\.drawing module
+====================
+
+.. automodule:: proj.drawing
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,234 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>proj.kirkpatrick module &#8212; COS451 Final Project: Kirkpatrick&#39;s Algorithm 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="proj.polygons module" href="proj.polygons.html" />
+    <link rel="prev" title="proj.independentset module" href="proj.independentset.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-proj.kirkpatrick">
+<span id="proj-kirkpatrick-module"></span><h1>proj.kirkpatrick module<a class="headerlink" href="#module-proj.kirkpatrick" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="proj.kirkpatrick.Kirkpatrick">
+<em class="property">class </em><code class="descname">Kirkpatrick</code><span class="sig-paren">(</span><em>subdivision: typing.List[polygons.Polygon], plot_layers=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/proj/kirkpatrick.html#Kirkpatrick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.Kirkpatrick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Implementation of Kirkpatrick’s algorithm.  When passed a tiling of 
+polygons, it processes it to produce a search tree.  After preprocessing,
+location takes O(log n) time, and the object uses O(n) space.</p>
+<p>The plot_layers parameter will produce png files of the layers the
+algorithm produces during preprocessing.  Note: this takes a while.</p>
+<dl class="method">
+<dt id="proj.kirkpatrick.Kirkpatrick.locate">
+<code class="descname">locate</code><span class="sig-paren">(</span><em>p: polygons.Point</em>, <em>plot_search=False</em><span class="sig-paren">)</span> &#x2192; typing.Union[polygons.Polygon, NoneType]<a class="reference internal" href="_modules/proj/kirkpatrick.html#Kirkpatrick.locate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.Kirkpatrick.locate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locates a point in the original tiling in O(log n) time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> – point to be located</li>
+<li><strong>plot_search</strong> – plots the tiles it searchs on the way</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">either the original polygon, or None if outside the tiling</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.kirkpatrick.next_layer">
+<code class="descname">next_layer</code><span class="sig-paren">(</span><em>regions: typing.List[polygons.Triangle], boundary: polygons.Triangle, digraph: networkx.classes.digraph.DiGraph</em><span class="sig-paren">)</span> &#x2192; typing.List[polygons.Triangle]<a class="reference internal" href="_modules/proj/kirkpatrick.html#next_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.next_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the next layer in the data structure by removing O(n) points, retriangulating,
+connecting new triangles in DAG to triangles with which they might overlap.  We don’t
+compute actual intersections to save time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regions</strong> – the current layer in the algorithm</li>
+<li><strong>boundary</strong> – the bounding triangle (so that the boundary is never removed)</li>
+<li><strong>digraph</strong> – digraph search tree for later location</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of triangles in the next layer</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.kirkpatrick.remove_point_triangulation">
+<code class="descname">remove_point_triangulation</code><span class="sig-paren">(</span><em>affected_triangles: typing.List[polygons.Triangle], p: polygons.Point</em><span class="sig-paren">)</span> &#x2192; polygons.Polygon<a class="reference internal" href="_modules/proj/kirkpatrick.html#remove_point_triangulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.remove_point_triangulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a point from affected triangles, return the resulting polygon that fills the gap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>affected_triangles</strong> – list of the triangles containing the point to be removed</li>
+<li><strong>p</strong> – point to be removed</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">polygon created by merging the affected triangles</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.kirkpatrick.time_tests">
+<code class="descname">time_tests</code><span class="sig-paren">(</span><em>min_pts: int = 10</em>, <em>max_pts: int = 100</em>, <em>inc=5</em>, <em>n_iter=100</em><span class="sig-paren">)</span> &#x2192; typing.List[polygons.Point]<a class="reference internal" href="_modules/proj/kirkpatrick.html#time_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.time_tests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes an intensive test of the algorithm.  Generates many tilings of 
+different numbers of points, and generates many query points to test.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>min_pts</strong> – mininum number of points in tiling</li>
+<li><strong>max_pts</strong> – maximum number of points in tiling</li>
+<li><strong>inc</strong> – generate tilings every inc points from min to max</li>
+<li><strong>n_iter</strong> – number of query points to test</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of points of (num_tiles, time for a query)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.kirkpatrick.triangle_graph">
+<code class="descname">triangle_graph</code><span class="sig-paren">(</span><em>regions: typing.List[polygons.Polygon], graph: networkx.classes.graph.Graph</em><span class="sig-paren">)</span> &#x2192; typing.List[polygons.Triangle]<a class="reference internal" href="_modules/proj/kirkpatrick.html#triangle_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.triangle_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Triangulate regions, connecting into a tree (acyclic digraph) for lookups from triangles to
+the original polygon tiling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regions</strong> – list of regions to be triangulated</li>
+<li><strong>graph</strong> – graph to be populated with edge from the original polygons to the triangles in their triangulations.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of all triangles in all regions</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="proj.kirkpatrick.wrap_triangle">
+<code class="descname">wrap_triangle</code><span class="sig-paren">(</span><em>poly: polygons.Polygon</em><span class="sig-paren">)</span> &#x2192; typing.Tuple[polygons.Triangle, typing.List[polygons.Triangle]]<a class="reference internal" href="_modules/proj/kirkpatrick.html#wrap_triangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#proj.kirkpatrick.wrap_triangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a large triangle that surrounds the polygon, and tiles the gap
+between the triangle the polygon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>poly</strong> – polygon to be surrounded</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple of the bounding triangle and the triangles in the gap</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="proj.html">proj package</a><ul>
+      <li>Previous: <a href="proj.independentset.html" title="previous chapter">proj.independentset module</a></li>
+      <li>Next: <a href="proj.polygons.html" title="next chapter">proj.polygons module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Theodore Ando.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/proj.kirkpatrick.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

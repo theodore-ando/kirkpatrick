@@ -1,0 +1,7 @@
+proj\.kirkpatrick module
+========================
+
+.. automodule:: proj.kirkpatrick
+    :members:
+    :undoc-members:
+    :show-inheritance:

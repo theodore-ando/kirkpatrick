@@ -1,0 +1,7 @@
+proj\.triangulate module
+========================
+
+.. automodule:: proj.triangulate
+    :members:
+    :undoc-members:
+    :show-inheritance:

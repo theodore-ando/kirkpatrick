@@ -1,0 +1,7 @@
+proj\.independentset module
+===========================
+
+.. automodule:: proj.independentset
+    :members:
+    :undoc-members:
+    :show-inheritance:

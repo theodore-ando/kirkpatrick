@@ -1,0 +1,24 @@
+proj package
+============
+
+Submodules
+----------
+
+.. toctree::
+
+   proj.conf
+   proj.drawing
+   proj.hull
+   proj.independentset
+   proj.kirkpatrick
+   proj.polygons
+   proj.triangulate
+   proj.utils
+
+Module contents
+---------------
+
+.. automodule:: proj
+    :members:
+    :undoc-members:
+    :show-inheritance:

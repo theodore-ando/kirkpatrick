@@ -1,0 +1,214 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>proj.hull &#8212; COS451 Final Project: Kirkpatrick&#39;s Algorithm 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for proj.hull</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">polygons</span> <span class="k">import</span> <span class="n">Segment</span><span class="p">,</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="k">import</span> <span class="n">ccw</span>
+
+
+<div class="viewcode-block" id="sq_dist2line"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.sq_dist2line">[docs]</a><span class="k">def</span> <span class="nf">sq_dist2line</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="n">Segment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute squared distance from p to a line.</span>
+<span class="sd">    </span>
+<span class="sd">    :param p: Point</span>
+<span class="sd">     </span>
+<span class="sd">    :param line: Segment object defining a line</span>
+<span class="sd">     </span>
+<span class="sd">    :return: Squared dist from p to line.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">A</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">B</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">A</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">A</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">c</span>
+    <span class="n">projection</span> <span class="o">=</span> <span class="n">projection</span> <span class="o">*</span> <span class="n">projection</span>
+
+    <span class="k">return</span> <span class="n">projection</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="farthest_point"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.farthest_point">[docs]</a><span class="k">def</span> <span class="nf">farthest_point</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Point</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the point farthest from line defined by A, B</span>
+<span class="sd">    </span>
+<span class="sd">    :param A: one point defining line </span>
+<span class="sd">    </span>
+<span class="sd">    :param B: second point defining line</span>
+<span class="sd">    </span>
+<span class="sd">    :param points: list of candidate points</span>
+<span class="sd">     </span>
+<span class="sd">    :return: Point in points that is farthest from line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">Segment</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">dists</span> <span class="o">=</span> <span class="p">[</span><span class="n">sq_dist2line</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+    <span class="n">p2dist</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dists</span><span class="p">)</span>
+    <span class="n">point</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(((</span><span class="n">p</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">p2dist</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">point</span></div>
+
+
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Splits list of points into those above the line AB, and those below AB</span>
+<span class="sd">    </span>
+<span class="sd">    :param A: on point on line</span>
+<span class="sd">    </span>
+<span class="sd">    :param B: second point on line</span>
+<span class="sd">    </span>
+<span class="sd">    :param points: list of Points to split</span>
+<span class="sd">     </span>
+<span class="sd">    :return: List of points above line, list of points below line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points_up</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span> <span class="k">if</span> <span class="n">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">points_down</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span> <span class="k">if</span> <span class="n">ccw</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">points_up</span><span class="p">,</span> <span class="n">points_down</span></div>
+
+
+<div class="viewcode-block" id="split_tri"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.split_tri">[docs]</a><span class="k">def</span> <span class="nf">split_tri</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Splits a list of points around a triangle to find set of points above Au and above uB.</span>
+<span class="sd">    </span>
+<span class="sd">    :param A: first point on triangle</span>
+<span class="sd">    </span>
+<span class="sd">    :param u: second point on triangle</span>
+<span class="sd">    </span>
+<span class="sd">    :param B: third point on triangle</span>
+<span class="sd">    </span>
+<span class="sd">    :param points: list of points to split</span>
+<span class="sd">     </span>
+<span class="sd">    :return: points above Au, points above uB </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">above_Au</span><span class="p">,</span> <span class="n">below_Au</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">above_uB</span><span class="p">,</span> <span class="n">below_uB</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">above_Au</span><span class="p">,</span> <span class="n">above_uB</span></div>
+
+
+<div class="viewcode-block" id="upperhull"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.upperhull">[docs]</a><span class="k">def</span> <span class="nf">upperhull</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the upper hull of a list of points with A, B being the left and right bounding points on the set.</span>
+<span class="sd">    </span>
+<span class="sd">    :param A: left most point in points</span>
+<span class="sd">    </span>
+<span class="sd">    :param B: right most point in points</span>
+<span class="sd">    </span>
+<span class="sd">    :param points: list of points</span>
+<span class="sd">    </span>
+<span class="sd">    :return: list of points defining upper half of convex hull</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">u</span> <span class="o">=</span> <span class="n">farthest_point</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">left_points</span><span class="p">,</span> <span class="n">right_points</span> <span class="o">=</span> <span class="n">split_tri</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">upperhull</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">right_points</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">upperhull</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">left_points</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="quickhull"><a class="viewcode-back" href="../../proj.hull.html#proj.hull.quickhull">[docs]</a><span class="k">def</span> <span class="nf">quickhull</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Point</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the convex hull of points using quickhull algorithm.</span>
+<span class="sd">    </span>
+<span class="sd">    :param points: list of points to use </span>
+<span class="sd">    </span>
+<span class="sd">    :return: subset of those points that define their convex hull. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">points</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="n">points_up</span><span class="p">,</span> <span class="n">points_down</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">A</span><span class="p">]</span> <span class="o">+</span> <span class="n">upperhull</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">points_down</span><span class="p">)</span> <span class="o">+</span> \
+           <span class="p">[</span><span class="n">B</span><span class="p">]</span> <span class="o">+</span> <span class="n">upperhull</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">points_up</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Theodore Ando.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,207 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>proj.triangulate &#8212; COS451 Final Project: Kirkpatrick&#39;s Algorithm 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for proj.triangulate</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">drawing</span>
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">polygons</span> <span class="k">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">Triangle</span>
+
+
+<span class="k">def</span> <span class="nf">_seg_intersect_poly</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">poly</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="o">*</span><span class="n">seg</span><span class="p">,</span> <span class="o">*</span><span class="n">edge</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">poly</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_remove_hole</span><span class="p">(</span><span class="n">poly</span><span class="p">:</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">hole</span><span class="p">:</span> <span class="n">Polygon</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polygon</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes hole from polygon by turning it into a single degenerate polygon </span>
+<span class="sd">    with a bridge edge connecting poly to interior hole </span>
+<span class="sd">    :param poly: </span>
+<span class="sd">    :param hole: </span>
+<span class="sd">    :return: </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">possible_bridges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">pts</span><span class="p">,</span> <span class="n">hole</span><span class="o">.</span><span class="n">pts</span><span class="p">))</span>
+    <span class="n">possible_bridges</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">))</span>
+    <span class="n">bridge</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">bridge</span> <span class="ow">in</span> <span class="n">possible_bridges</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_seg_intersect_poly</span><span class="p">(</span><span class="n">bridge</span><span class="p">,</span> <span class="n">poly</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">_seg_intersect_poly</span><span class="p">(</span><span class="n">bridge</span><span class="p">,</span> <span class="n">hole</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="k">break</span>
+
+    <span class="n">poly_pt</span><span class="p">,</span> <span class="n">hole_pt</span> <span class="o">=</span> <span class="n">bridge</span>
+
+    <span class="c1"># Roll back the poly points to go around polygon first, away from bridge</span>
+    <span class="n">poly_ix</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">pts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">poly_pt</span><span class="p">)</span>
+    <span class="n">poly_pts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">pts</span><span class="p">,</span> <span class="o">-</span><span class="n">poly_ix</span><span class="p">))</span>
+
+    <span class="c1"># Reverse and roll the hole points because we must go around hole c.w. to</span>
+    <span class="c1"># go around whole degenerate polygon ccw</span>
+    <span class="n">hole_pts</span> <span class="o">=</span> <span class="n">hole</span><span class="o">.</span><span class="n">pts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">hole_ix</span> <span class="o">=</span> <span class="n">hole_pts</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">hole_pt</span><span class="p">)</span>
+    <span class="n">hole_pts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">hole_pts</span><span class="p">,</span> <span class="o">-</span><span class="n">hole_ix</span><span class="p">))</span>
+
+    <span class="n">degenerate_pts</span> <span class="o">=</span> <span class="n">poly_pts</span> <span class="o">+</span> <span class="p">[</span><span class="n">poly_pt</span><span class="p">]</span> <span class="o">+</span> <span class="n">hole_pts</span> <span class="o">+</span> <span class="p">[</span><span class="n">hole_pt</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">degenerate_pts</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_valid_ear</span><span class="p">(</span><span class="n">ear</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">poly</span><span class="p">):</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">pts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">ccw</span><span class="p">(</span><span class="o">*</span><span class="n">pts</span><span class="p">[</span><span class="n">ear</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_seg_intersect_poly</span><span class="p">(</span><span class="n">pts</span><span class="p">[[</span><span class="n">ear</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ear</span><span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">poly</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="triangulate"><a class="viewcode-back" href="../../proj.triangulate.html#proj.triangulate.triangulate">[docs]</a><span class="k">def</span> <span class="nf">triangulate</span><span class="p">(</span><span class="n">poly</span><span class="p">:</span> <span class="n">Polygon</span><span class="p">,</span> <span class="n">hole</span><span class="p">:</span> <span class="n">Polygon</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Triangle</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Triangulates a polygon, potentially with a hole in it.  Uses naive O(n^2) </span>
+<span class="sd">    ear-clipping method.</span>
+<span class="sd">    </span>
+<span class="sd">    :param poly: polygon to be triangulated</span>
+<span class="sd">    </span>
+<span class="sd">    :param hole: hole in the polygon</span>
+<span class="sd">    </span>
+<span class="sd">    :return: list of triangles making up the polygon</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">hole</span><span class="p">:</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">_remove_hole</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">hole</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">n</span>
+    <span class="n">curr_n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">pts</span><span class="p">)</span>
+
+    <span class="n">ears</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ear</span><span class="p">:</span> <span class="p">[(</span><span class="n">ear</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">,</span> <span class="n">ear</span><span class="p">,</span> <span class="p">(</span><span class="n">ear</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ear</span> <span class="ow">in</span> <span class="n">poly</span><span class="o">.</span><span class="n">ears</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Adjacency dict of points in poly</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="p">{</span> <span class="n">i</span><span class="p">:</span> <span class="p">((</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">tris</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">tris</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># Pick a random ear, turn into triangle, and append it to triangulation</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">ear</span> <span class="o">=</span> <span class="n">ears</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="n">tris</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Triangle</span><span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">ear</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+        <span class="c1"># Update connection of vertices adjacent to ear vertex</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ear</span>
+        <span class="n">adj</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">adj</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">adj</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">adj</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Update ear status of adjacent vertices</span>
+        <span class="n">ear_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">adj</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">ear_c</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">adj</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">is_ear</span><span class="p">(</span><span class="n">ear_a</span><span class="p">):</span>
+            <span class="n">ears</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ear_a</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ears</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">is_ear</span><span class="p">(</span><span class="n">ear_c</span><span class="p">):</span>
+            <span class="n">ears</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ear_c</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ears</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">curr_n</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">tris</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span>
+        <span class="n">Point</span><span class="p">(</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.727261</span><span class="p">,</span> <span class="mf">0.681506</span><span class="p">),</span>
+        <span class="n">Point</span><span class="p">(</span><span class="mf">2.000000</span><span class="p">,</span> <span class="mf">2.000000</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mf">1.128893</span><span class="p">,</span> <span class="mf">1.104487</span><span class="p">),</span>
+        <span class="n">Point</span><span class="p">(</span><span class="mf">0.848083</span><span class="p">,</span> <span class="mf">1.122645</span><span class="p">)</span>
+    <span class="p">])</span>
+
+    <span class="n">triangles</span> <span class="o">=</span> <span class="n">triangulate</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
+
+    <span class="n">drawing</span><span class="o">.</span><span class="n">plot_polygons</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Theodore Ando.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

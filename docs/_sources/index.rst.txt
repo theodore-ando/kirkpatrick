@@ -1,0 +1,26 @@
+.. COS451 Final Project: Kirkpatrick's Algorithm documentation master file, created by
+   sphinx-quickstart on Tue Jan 16 11:23:37 2018.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to COS451 Final Project: Kirkpatrick's Algorithm's documentation!
+=========================================================================
+
+This is the documentation for my COS451 final project on implementing Kirkpatrick's algorithm for point location.
+
+Please view requirements.txt for a list of necessary packages outside the standard library.
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+   :caption: Contents:
+
+   Kirkpatrick Demo.ipynb
+   proj
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
