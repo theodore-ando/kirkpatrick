@@ -250,7 +250,7 @@ class Kirkpatrick:
             plt.clf()
 
         i = 1
-        while len(self.digraph.neighbors(curr)) > 1:
+        while len(list(self.digraph.neighbors(curr))) > 1:
             for node in self.digraph.neighbors(curr):
                 if p in node:
                     curr = node
@@ -270,11 +270,11 @@ class Kirkpatrick:
             i+=1
 
         # Access the original tile just below the polygon if it exists
-        neighbors = self.digraph.neighbors(curr)
+        neighbors = list(self.digraph.neighbors(curr))
         if len(neighbors) == 1:
             curr = neighbors[0]
 
-        if self.digraph.node[curr]["original"]:
+        if self.digraph.nodes[curr]["original"]:
             return curr
         return None
 
