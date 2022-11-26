@@ -24,7 +24,7 @@ def planar_independent_set(graph: Graph, black_list: List=list(), degree_lim=IND
     """
     unmarked_nodes = {
         node
-        for node in graph.nodes_iter()
+        for node in list(graph.nodes)
         if graph.degree(node) <= degree_lim and
            node not in black_list
     }
